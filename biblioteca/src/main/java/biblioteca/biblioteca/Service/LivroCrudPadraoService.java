@@ -55,6 +55,17 @@ public class LivroCrudPadraoService implements LivroCrudService {
     }
 
     @Override
+    public List<LivroResponseDto> buscarLivrosPorTitulo(String titulo) {
+        List<Livro> livros = livroRepository.findByNomeLivroContainingIgnoreCase(titulo);
+        
+        if (livros.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum livro encontrado com o título informado");
+        }
+        
+        return livros.stream().map(this::paraResponseDto).toList();
+    }
+
+    @Override
     public LivroResponseDto atualizarLivro(Long isbn, LivroPostPutDto livroPostPutDto) {
         Livro livro = obterLivroExistente(isbn);
         
